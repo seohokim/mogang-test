@@ -56,8 +56,8 @@ const formatDuration = (duration: string): string => {
     return duration.replace(/^(\d{1,4}):(\d{1})$/, '$10$2');
 };
 
-fs.createReadStream(path.resolve(__dirname, 'inflearn_courses.csv'))
-    .pipe(csv.parse({ headers: true }))
+fs.createReadStream(path.resolve(__dirname, 'output.csv'))
+    .pipe(csv.parse({ headers: true, escape: '"' }))
     .on('data', (row: Lecture) => {
         const [originPrice, currentPrice] = parsePrice(row.price);
         const lectureJson: LectureJson = {
@@ -65,7 +65,7 @@ fs.createReadStream(path.resolve(__dirname, 'inflearn_courses.csv'))
             title: row.title,
             url: row.url,
             thumbnailUrl: row.thumbnail,
-            description: row.description,
+            description: row.description.replace(/\\n/g, '\n'), // Assuming the CSV escapes new lines as \n
             author: row.author,
             originPrice: originPrice,
             currentPrice: currentPrice,
