@@ -1,4 +1,4 @@
-provider,title,description,url,thumbnail,author,price,level,category,score,durationInMinutes,skills,lastUpdated
+provider,title,description,url,thumbnailUrl,author,price,level,category,score,duration,skills,lectureUpdatedAt
 inflearn,독하게 C를 배운 사람을 위한 선형 자료구조,C언어를 이용해 연결 리스트 기반 선형 자료구조를 제대로 구현하는 방법을 다룬 강의 입니다. 연결 리스트를 넘어 DB의 구조까지 한 번에 이해할 수 있습니다.,https://www.inflearn.com/course/독하게-선형-자료구조-c,https://cdn.inflearn.com/public/courses/332176/cover/eb8039df-f198-4555-8540-010ca1145ef7/332176-eng.jpg,널널한 개발자,"₩66,000₩46,200",초급,"알고리즘 · 자료구조, 프로그래밍 언어",,7:23,"C,vc++,알고리즘,코딩 테스트",2023/10
 inflearn,스프링 핵심 원리 - 기본편,"스프링 입문자가 예제를 만들어가면서 스프링의 핵심 원리를 이해하고, 스프링 기본기를 확실히 다질 수 있습니다.",https://www.inflearn.com/course/스프링-핵심-원리-기본편,https://cdn.inflearn.com/public/courses/325969/cover/2868c757-5886-4508-a140-7cb68a83dfd8/325969-eng.png,김영한,"₩88,000",초급,"백엔드, 웹 개발",5.0,12:5,"Spring,객체지향",2023/08
 inflearn,"[퇴근후딴짓] 빅데이터 분석기사 실기 (작업형1,2,3)","비전공자, 입문자가 빅데이터 분석기사 실기를 빠르게 취득할 수 있도록 안내해드려요!

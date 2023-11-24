@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as csv from 'fast-csv';
 
-interface Lecture {
+interface UdemyLecture {
     provider: string;
     title: string;
     url: string;
@@ -17,6 +17,7 @@ interface Lecture {
     duration: string;
     skills: string;
     lectureUpdatedAt: string;
+    detail: string;
 }
 
 interface LectureJson {
@@ -36,52 +37,47 @@ interface LectureJson {
     lectureUpdatedAt: string;
 }
 
-const parsePrice = (price: string): [number, number] => {
-    const prices = price.match(/₩\d+(,\d{3})*/g);
-    if (prices) {
-        const numericPrices = prices.map((p) => parseInt(p.replace(/₩|,/g, ''), 10));
-        if (numericPrices.length === 1) {
-            // 가격이 하나인 경우, 두 위치 모두 같은 값으로 설정
-            return [numericPrices[0], numericPrices[0]];
-        } else if (numericPrices.length > 1) {
-            // 가격이 둘인 경우, 첫 번째는 origin, 두 번째는 current로 설정
-            return [numericPrices[0], numericPrices[1]];
-        }
+const parsePriceUdemy = (price: string): number => {
+    return parseInt(price.replace(/₩|,/g, ''), 10) || 0;
+};
+
+const formatLevel = (level: string): string => {
+    switch (level) {
+        case '모든 수준':
+            return '입문';
+        case '초급자':
+            return '초급';
+        default:
+            return '중급 이상';
     }
-    // 매칭되는 가격이 없거나 잘못된 형식의 경우 기본값 반환
-    console.log('price parsing error');
-    return [0, 0];
 };
 
-const formatDuration = (duration: string): string => {
-    console.log(duration);
-    // "0:MM" 형식으로 변경
-    duration = duration.replace(/^0:/, '0:0');
-
-    // "HH:0M" 형식으로 변경
-    duration = duration.replace(/:(\d{1})$/, ':0$1');
-
-    return duration;
+const addJavaScriptSkill = (title: string, description: string, skills: string, detail: string): string[] => {
+    const skillSet = new Set(skills.split(',').map((s) => s.trim()));
+    if (/js|자바스크립트|javascript|JS/i.test(title + description + detail)) {
+        skillSet.add('JavaScript');
+    }
+    return Array.from(skillSet);
 };
 
-fs.createReadStream(path.resolve(__dirname, 'inflearn_courses.csv'))
+fs.createReadStream(path.resolve(__dirname, 'udemy_courses.csv'))
     .pipe(csv.parse({ headers: true, escape: '"' }))
-    .on('data', (row: Lecture) => {
-        const [originPrice, currentPrice] = parsePrice(row.price);
+    .on('data', (row: UdemyLecture) => {
+        const price = parsePriceUdemy(row.price);
         const lectureJson: LectureJson = {
             provider: row.provider,
             title: row.title,
             url: row.url,
             thumbnailUrl: row.thumbnailUrl,
-            description: row.description.replace(/\\n/g, '\n'), // Assuming the CSV escapes new lines as \n
+            description: row.description.replace(/\\n/g, '\n'),
             author: row.author,
-            originPrice: originPrice,
-            currentPrice: currentPrice,
-            level: row.level,
+            originPrice: price,
+            currentPrice: price,
+            level: formatLevel(row.level),
             category: row.category.split(',').map((s) => s.trim()),
             score: row.score ? (typeof row.score === 'string' ? parseFloat(row.score) : row.score) : 0.0,
-            duration: formatDuration(row.duration),
-            skills: row.skills.split(',').map((s) => s.trim()),
+            duration: row.duration,
+            skills: addJavaScriptSkill(row.title, row.description, row.skills, row.detail),
             lectureUpdatedAt: row.lectureUpdatedAt,
         };
 
